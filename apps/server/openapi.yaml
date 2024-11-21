@@ -1,0 +1,171 @@
+openapi: 3.1.0
+paths:
+  /api/auth/sign-up:
+    post:
+      operationId: signUp
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpDTO"
+      responses:
+        "201":
+          description: ""
+      summary: ""
+      tags: &a1
+        - auth
+  /api/auth/login/credentials:
+    post:
+      operationId: credentialsLogin
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CredentialsLoginDTO"
+      responses:
+        "201":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwtTokenDTO"
+        "401":
+          description: Email or Password not exits or matches
+      summary: ""
+      tags: *a1
+  /api/auth/session:
+    get:
+      operationId: session
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionDTO"
+      security:
+        - bearer: []
+      summary: ""
+      tags: *a1
+  /api/auth/logout:
+    post:
+      operationId: logout
+      parameters: []
+      responses:
+        "201":
+          description: ""
+      summary: ""
+      tags: *a1
+info:
+  title: Shooper Travel API
+  description: Server API
+  version: 1.0.0
+  contact: {}
+tags:
+  - name: auth
+    description: Auth API
+  - name: users
+    description: Users API
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    SignUpDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          minLength: 3
+        password:
+          type: string
+        role:
+          type: string
+          enum:
+            - passenger
+            - driver
+          x-enumNames:
+            - passenger
+            - driver
+      required:
+        - email
+        - name
+        - password
+        - role
+    CredentialsLoginDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+      required:
+        - email
+        - password
+    JwtTokenDTO:
+      type: object
+      properties:
+        type:
+          description: Token Type
+          type: string
+          enum:
+            - Bearer
+          x-enumNames:
+            - BEARER
+          default: Bearer
+        token:
+          description: JWT Token Type
+          type: string
+        expiryAt:
+          description: Expiration At
+          type: string
+      required:
+        - token
+        - expiryAt
+    SessionDTO:
+      description: Account Session Data
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum:
+            - passenger
+            - driver
+          x-enumNames:
+            - passenger
+            - driver
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        iss:
+          type: string
+        iat:
+          type: number
+        exp:
+          type: number
+      required:
+        - id
+        - role
+        - email
+        - name
+        - iss
+        - iat
+        - exp

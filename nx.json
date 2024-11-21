@@ -1,0 +1,62 @@
+{
+  "targetDefaults": {
+    "with-env": {
+      "dependsOn": []
+    },
+    "with-e2e-test-env": {
+      "dependsOn": []
+    },
+    "build": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "outputs": [
+        "{workspaceRoot}/apps/server/dist",
+        "{workspaceRoot}/apps/web/.next"
+      ]
+    },
+    "format": {
+      "dependsOn": []
+    },
+    "start": {
+      "dependsOn": ["^build", "^start"]
+    },
+    "dev": {
+      "cache": true,
+      "dependsOn": ["^dev"],
+      "outputs": [
+        "{workspaceRoot}/apps/server/dist",
+        "{workspaceRoot}/apps/web/.next"
+      ]
+    },
+    "start:debug": {
+      "dependsOn": []
+    },
+    "start:prod": {
+      "dependsOn": []
+    },
+    "lint": {
+      "dependsOn": []
+    },
+    "test": {
+      "dependsOn": []
+    },
+    "test:watch": {
+      "dependsOn": []
+    },
+    "test:cov": {
+      "dependsOn": []
+    },
+    "test:debug": {
+      "dependsOn": []
+    },
+    "test:e2e": {
+      "dependsOn": []
+    },
+    "test:e2e:watch": {
+      "dependsOn": []
+    },
+    "build:openapi:client": {
+      "dependsOn": []
+    }
+  }
+}

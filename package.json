@@ -1,0 +1,28 @@
+{
+  "name": "shooper-nmb",
+  "packageManager": "yarn@1.22.22",
+  "workspaces": [
+    "apps/*"
+  ],
+  "private": true,
+  "scripts": {
+    "with-env": "yarn dotenv",
+    "clean": "yarn cache clean && rm -rf node_modules package-lock.json yarn.lock **/**/{node_modules,dist,.turbo,.next,package-lock.json,yarn.lock}",
+    "build": "yarn prisma generate && yarn with-env lerna run build --concurrency --load-env-files --stream --loglevel verbose",
+    "dev": "yarn with-env lerna run dev --stream  --concurrency --load-env-files",
+    "build:shared": "yarn with-env lerna run build:shared --stream --load-env-files",
+    "docker:build": "yarn build && docker-compose build shooper",
+    "start": "yarn with-env lerna run start  --concurrency --load-env-files  --stream",
+    "lint": "yarn lerna run lint",
+    "prisma:studio": "yarn prisma studio",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "prisma": "5.22.0",
+    "prisma-dbml-generator": "0.12.0",
+    "lerna": "8.1.9"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0"
+  }
+}

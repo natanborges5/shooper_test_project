@@ -2,7 +2,19 @@
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
+  "monorepo": true,
   "compilerOptions": {
+    "builder": {
+      "type": "swc",
+      "options": {
+        "copyFiles": true,
+        "sync": true,
+        "watch": true,
+        "swcrcPath": ".swcrc",
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".mjsx", ".cjs"]
+      }
+    },
+    "typeCheck": false,
     "deleteOutDir": true
   }
 }

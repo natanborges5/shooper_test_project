@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "extends": "apps/server/nest-cli.json",
+  "sourceRoot": "apps/server/src",
+  "monorepo": true  
+}
