@@ -20,7 +20,7 @@ export const EnvConfigSchema = z
       .default('0.0.0.0')
       .describe('The host the app is running on'),
 
-    PORT: StrToIntNumberSchema.default(4000).describe(
+    PORT: StrToIntNumberSchema.default(3000).describe(
       'The port the app is running on',
     ),
     BACKEND_PORT: StrToIntNumberSchema.optional().describe(
@@ -66,14 +66,14 @@ export const EnvConfigSchema = z
       }),
   })
   .transform((data) => {
-    data.BACKEND_PORT = data.BACKEND_PORT ?? data.PORT ?? 4000;
+    data.BACKEND_PORT = data.BACKEND_PORT ?? data.PORT ?? 8080;
     data.CORS_ORIGINS = [
       ...data.CORS_ORIGINS,
       data.NEXT_PUBLIC_BACKEND_URL,
       data.NEXT_PUBLIC_FRONTEND_URL,
     ];
     if (data.NODE_ENV === 'development') {
-      data.CORS_ORIGINS.push(`http://localhost:${data.FRONTEND_PORT ?? 80}`);
+      data.CORS_ORIGINS.push(`http://localhost:${data.FRONTEND_PORT ?? 3000}`);
       data.CORS_ORIGINS.push(`http://localhost:${data.BACKEND_PORT}`);
     }
     data.CORS_ORIGINS = [

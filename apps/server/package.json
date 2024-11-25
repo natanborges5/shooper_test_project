@@ -10,7 +10,7 @@
     "build": "NODE_ENV=production nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "dev": "NODE_ENV=development  PORT=${BACKEND_PORT:-${PORT:-4000}} yarn with-env nest start --watch",
+    "dev": "NODE_ENV=development  PORT=${BACKEND_PORT:-${PORT:-8080}} yarn with-env nest start --watch",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -20,7 +20,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "build:openapi:client": "npx rapini react-query v5 -p openapi.yaml -o ../web/src/lib/react-query && yarn build:openapi:client:remove-package-json && yarn build:openapi:client:fix-onsuccess-context && yarn prettier --write ../web/src/lib/react-query/index.ts"
+    "build:openapi:client": "npx rapini react-query v5 -p openapi.yaml -o ../web/src/lib/react-query && yarn build:openapi:client:remove-package-json && yarn build:openapi:client:fix-onsuccess-context && yarn prettier --write ../web/src/lib/react-query/index.ts",
+    "build:openapi:client:remove-package-json": "rm -rf ../web/src/lib/react-query/package.json",
+    "build:openapi:client:fix-onsuccess-context": "perl -pi -e 's/onSuccess: \\(data: TData, variables: TVariables, context\\?: TContext\\) => {/onSuccess: \\(data: TData, variables: TVariables, context: TContext\\) => {/g' ../web/src/lib/react-query/index.ts"
   },
   "dependencies": {
     "@nestjs/common": "10.4.8",

@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -12,6 +13,7 @@ import { EnvConfig } from 'src/global/env.config';
 import { Password } from 'src/global/password';
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
@@ -41,7 +43,7 @@ export class UserService {
           email: data.email,
           name: data.name,
           password: await Password.generateHash(
-            Math.random().toString().slice(2, 8),
+            data.password,
           ),
           role: data.role,
         },
