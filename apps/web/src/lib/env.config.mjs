@@ -16,12 +16,12 @@ export const EnvConfigSchema = z.object( {
     .string()
     .url()
     .describe( "The URL of the Backend Server" )
-    .default( "http://localhost:4000" ),
+    .default( "http://localhost:8080" ),
   NEXT_PUBLIC_FRONTEND_URL: z
     .string()
     .url()
     .describe( "The URL of the Frontend Server" )
-    .default( "http://localhost:4000" ),
+    .default( "http://localhost:3000" ),
 } );
 
 

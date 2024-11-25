@@ -1,21 +1,14 @@
+@import url("@mantine/core/styles.css");
+@import url("@mantine/notifications/styles.css");
+@import url("@mantine/dates/styles.css");
+@import url("./work-sans.font-family.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+* {
+  font-family: "Work Sans", sans-serif;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: white; /* Define a cor padrão do texto como branco */
 }
