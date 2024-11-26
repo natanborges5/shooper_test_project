@@ -26,10 +26,8 @@ async function main() {
             vehicle: "Plymouth Valiant 1973 rosa e enferrujado",
             ride: {
               create:{
-                destinationLatitude: -22.969185252278635,
-                destinationLongitude: -43.22192483766582,
-                originLatitude: -22.961192211032277, 
-                originLongitude: -43.21200363257948,
+                destination: "Jardim Botanico Rio de Janeiro",
+                origin: "Aeroporto Santos Dumont",
                 distance: 1000,
                 duration: "120",
                 status: "completed",
@@ -58,16 +56,14 @@ async function main() {
       driver: {
         create: {
             description: "Ei, aqui é o Dom. Pode entrar, vou te levar com segurança e rapidez ao seu destino. Só não mexa no rádio, a playlist é sagrada.",
-            minKm: 1,
+            minKm: 5,
             avgRating: 4,
-            tax: 2.50,
+            tax: 5,
             vehicle: "Dodge Charger R/T 1970 modificado",
             ride: {
               create:{
-                destinationLatitude: -22.969185252278635,
-                destinationLongitude: -43.22192483766582,
-                originLatitude: -22.961192211032277, 
-                originLongitude: -43.21200363257948,
+                destination: "Jardim Botanico Rio de Janeiro",
+                origin: "Aeroporto Santos Dumont",
                 distance: 1000,
                 duration: "120",
                 status: "completed",
@@ -96,16 +92,14 @@ async function main() {
       driver: {
         create: {
             description: "Boa noite, sou James Bond. À seu dispor para um passeio suave e discreto. Aperte o cinto e aproveite a viagem.",
-            minKm: 1,
+            minKm: 10,
             avgRating: 5,
-            tax: 2.50,
+            tax: 10,
             vehicle: "Aston Martin DB5 clássico",
             ride: {
               create:{
-                destinationLatitude: -22.969185252278635,
-                destinationLongitude: -43.22192483766582,
-                originLatitude: -22.961192211032277, 
-                originLongitude: -43.21200363257948,
+                destination: "Jardim Botanico Rio de Janeiro",
+                origin: "Aeroporto Santos Dumont",
                 distance: 1000,
                 duration: "120",
                 status: "completed",

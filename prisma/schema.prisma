@@ -54,22 +54,20 @@ model Driver {
 }
 
 model Ride {
-  id                   String     @id @default(uuid()) @db.Uuid
-  passengerId          String     @db.Uuid
-  driverId             String     @db.Uuid
-  value                Float
-  status               RideStatus
-  originLatitude       Float
-  originLongitude      Float
-  destinationLatitude  Float
-  destinationLongitude Float
-  duration             String
-  distance             Int
-  createdAt            DateTime   @default(now())
-  updatedAt            DateTime?  @updatedAt
-  passenger            User       @relation(fields: [passengerId], references: [id])
-  driver               Driver     @relation(fields: [driverId], references: [id])
-  review               Review[]
+  id          String     @id @default(uuid()) @db.Uuid
+  passengerId String     @db.Uuid
+  driverId    String     @db.Uuid
+  value       Float
+  status      RideStatus
+  origin      String
+  destination String
+  duration    String
+  distance    Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime?  @updatedAt
+  passenger   User       @relation(fields: [passengerId], references: [id])
+  driver      Driver     @relation(fields: [driverId], references: [id])
+  review      Review[]
 }
 
 model Review {
