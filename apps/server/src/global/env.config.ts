@@ -43,6 +43,7 @@ export const EnvConfigSchema = z
       .describe('The URL for Backend Server')
       .optional()
       .default('http://localhost:5000'),
+    NEXT_PUBLIC_GOOGLE_API_KEY: z.string(),
     NEXT_PUBLIC_FRONTEND_URL: z
       .string()
       .url()

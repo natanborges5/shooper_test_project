@@ -1,3 +1,4 @@
+import { ZodValidationPipe } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const StrToIntNumberSchema = z
@@ -17,3 +18,7 @@ export const StrToDateSchema = z
 export const StringBooleanSchema = z
   .union([z.boolean(), z.string()])
   .transform((val) => `${val}`.toLowerCase() === 'true');
+
+
+export const addressQueryParamSchema = z.string().min(5)
+export const addressValidationPipe = new ZodValidationPipe(addressQueryParamSchema);

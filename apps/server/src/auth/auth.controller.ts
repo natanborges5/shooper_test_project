@@ -19,7 +19,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { CredentialsLoginDTO, SignUpDTO } from 'src/dto/user.dto';
+import { CredentialsLoginDTO, PublicUserDTO, SignUpDTO } from 'src/dto/user.dto';
 import { UserService } from './user.service';
 import { env, EnvConfig } from 'src/global/env.config';
 import datefns from 'date-fns';
@@ -102,7 +102,19 @@ export class AuthController {
   async session(@Session() session: SessionDTO) {
     return session;
   }
-
+  @Get('users')
+  @ApiOperation({ operationId: 'getAllPassengers' })
+  @ApiOkResponse({
+    type: PublicUserDTO,
+    isArray: true,
+  })
+  async getAllPassengers() {
+    try {
+      return await this.userService.listUsers();
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
   @Post('logout')
   @ApiOperation({ operationId: 'logout' })
   async logout(@Req() request: Request, @Res() response: Response) {

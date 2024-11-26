@@ -52,6 +52,21 @@ paths:
         - bearer: []
       summary: ""
       tags: *a1
+  /api/auth/users:
+    get:
+      operationId: getAllPassengers
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PublicUserDTO"
+      summary: ""
+      tags: *a1
   /api/auth/logout:
     post:
       operationId: logout
@@ -61,44 +76,69 @@ paths:
           description: ""
       summary: ""
       tags: *a1
-  /api/ride:
+  /api/ride/estimate:
     post:
-      description: Ride Registration / Cadastro de Corrida
-      operationId: createRide
+      description: Estimate Ride / Calcular corrida
+      operationId: estimateRide
       parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateRideDTO"
+              $ref: "#/components/schemas/EstimateRideDTO"
       responses:
         "201":
           description: ""
-      security:
-        - bearer: []
-      summary: createRide
-      tags:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateRideCreatedDTO"
+      summary: estimateRide
+      tags: &a2
         - ride
-  /api/maps/coordinates:
-    post:
-      description: Get coordinates / Busca as coordenadas
-      operationId: getCoordinates
+  /api/ride/confirm:
+    patch:
+      description: Confirm Ride / Confirmar corrida
+      operationId: confirmRide
       parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GetCoordinatesDTO"
+              $ref: "#/components/schemas/EstimateRideDTO"
       responses:
         "201":
           description: ""
-      security:
-        - bearer: []
-      summary: getCoordinates
-      tags:
-        - maps
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateRideCreatedDTO"
+      summary: confirmRide
+      tags: *a2
+  /api/ride/address:
+    get:
+      description: Estimate Ride / Calcular corrida
+      operationId: getAddress
+      parameters:
+        - name: street
+          required: true
+          in: query
+          description: Street name
+          schema:
+            type: string
+      responses:
+        "201":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+      summary: getAddress
+      tags: *a2
 info:
   title: Shooper Travel API
   description: Server API
@@ -207,7 +247,39 @@ components:
         - iss
         - iat
         - exp
-    CreateRideDTO:
+    PublicUserDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          minLength: 3
+      required:
+        - id
+        - email
+        - name
+    EstimateRideDTO:
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+        origin:
+          type: string
+          minLength: 4
+        destination:
+          type: string
+          minLength: 4
+      required:
+        - customer_id
+        - origin
+        - destination
+    EstimateRideCreatedDTO:
       type: object
       properties:
         origin:
@@ -230,13 +302,49 @@ components:
           required:
             - latitude
             - longitude
+        distance:
+          type: number
+        duration:
+          type: string
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              vehicle:
+                type: string
+              review:
+                type: object
+                properties:
+                  rating:
+                    type: number
+                  comment:
+                    type: string
+                required:
+                  - rating
+                  - comment
+              value:
+                type: number
+            required:
+              - id
+              - name
+              - description
+              - vehicle
+              - review
+              - value
+        routeResponse:
+          type: object
+          additionalProperties: {}
       required:
         - origin
         - destination
-    GetCoordinatesDTO:
-      type: object
-      properties:
-        address:
-          type: string
-      required:
-        - address
+        - distance
+        - duration
+        - options
+        - routeResponse

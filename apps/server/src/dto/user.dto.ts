@@ -17,3 +17,9 @@ export const CredentialsLoginSchema = z.object({
 });
 
 export class CredentialsLoginDTO extends createZodDto(CredentialsLoginSchema) {}
+export const PublicUserSchema = z.object({
+  id: z.string().uuid(),
+  email: z.string().email(),
+  name: z.string().min(3),
+});
+export class PublicUserDTO extends createZodDto(PublicUserSchema) {}

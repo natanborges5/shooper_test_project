@@ -51,6 +51,18 @@ export class UserService {
     });
     return user;
   }
+  async listUsers(){
+    return await this.prisma.user.findMany({
+      where: {
+        role: "passenger"
+      },
+      select:{
+        id: true,
+        name: true,
+        email: true,
+      }
+    })
+  }
   async credentialsLogin(body: CredentialsLoginDTO): Promise<JwtTokenDTO> {
     const user = await this.prisma.user.findUnique({
       where: {
