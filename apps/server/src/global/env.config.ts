@@ -36,11 +36,7 @@ export const EnvConfigSchema = z
       .default(
         'postgresql://postgres:postgres@localhost:5432/postgres?schema=public',
       ),
-    REDIS_URL: z
-      .string()
-      .url()
-      .describe('The URL of the Redis database')
-      .default('redis://localhost:6379'),
+      GOOGLE_API_KEY: z.string(),
     NEXT_PUBLIC_BACKEND_URL: z
       .string()
       .url()

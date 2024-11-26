@@ -4,6 +4,9 @@
   "workspaces": [
     "apps/*"
   ],
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "private": true,
   "scripts": {
     "with-env": "yarn dotenv",

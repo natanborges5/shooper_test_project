@@ -61,6 +61,44 @@ paths:
           description: ""
       summary: ""
       tags: *a1
+  /api/ride:
+    post:
+      description: Ride Registration / Cadastro de Corrida
+      operationId: createRide
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRideDTO"
+      responses:
+        "201":
+          description: ""
+      security:
+        - bearer: []
+      summary: createRide
+      tags:
+        - ride
+  /api/maps/coordinates:
+    post:
+      description: Get coordinates / Busca as coordenadas
+      operationId: getCoordinates
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetCoordinatesDTO"
+      responses:
+        "201":
+          description: ""
+      security:
+        - bearer: []
+      summary: getCoordinates
+      tags:
+        - maps
 info:
   title: Shooper Travel API
   description: Server API
@@ -169,3 +207,36 @@ components:
         - iss
         - iat
         - exp
+    CreateRideDTO:
+      type: object
+      properties:
+        origin:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+          required:
+            - latitude
+            - longitude
+        destination:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+          required:
+            - latitude
+            - longitude
+      required:
+        - origin
+        - destination
+    GetCoordinatesDTO:
+      type: object
+      properties:
+        address:
+          type: string
+      required:
+        - address

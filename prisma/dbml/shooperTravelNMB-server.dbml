@@ -17,14 +17,14 @@ Table User {
   updatedAt DateTime
   driver Driver
   ride Ride [not null]
+  review Review [not null]
 }
 
 Table Driver {
   id String [pk]
-  userId String [unique, not null]
   description String [not null]
   vehicle String [not null]
-  rating String [not null]
+  avgRating Float [not null]
   tax Decimal [not null]
   minKm Int [not null]
   user User [not null]
@@ -35,14 +35,30 @@ Table Ride {
   id String [pk]
   passengerId String [not null]
   driverId String [not null]
-  startPoint String [not null]
-  endPoint String [not null]
-  price Float [not null]
+  value Float [not null]
   status RideStatus [not null]
+  originLatitude Float [not null]
+  originLongitude Float [not null]
+  destinationLatitude Float [not null]
+  destinationLongitude Float [not null]
+  duration String [not null]
+  distance Int [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime
   passenger User [not null]
   driver Driver [not null]
+  review Review [not null]
+}
+
+Table Review {
+  id String [pk]
+  rating Float [not null]
+  comment String
+  userId String [not null]
+  rideId String [not null]
+  authorRole Role [not null]
+  ride Ride [not null]
+  user User [not null]
 }
 
 Enum Role {
@@ -56,8 +72,12 @@ Enum RideStatus {
   completed
 }
 
-Ref: Driver.userId - User.id
+Ref: Driver.id - User.id
 
 Ref: Ride.passengerId > User.id
 
 Ref: Ride.driverId > Driver.id
+
+Ref: Review.rideId > Ride.id
+
+Ref: Review.userId > User.id
