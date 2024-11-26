@@ -9,8 +9,9 @@ import {
     type PropsWithChildren,
 } from "react";
 import { initialize } from "../lib/react-query";
-import { SessionProvider } from "../lib/session.store";
 import { http, reactQuery } from "../lib/clients";
+import { BaseLayout } from "../components/base.layout";
+import { HomeProvider } from "../components/home/home.context";
 export type ApiClients = {
     http: ReturnType<typeof axios.create>;
     reactQuery: ReturnType<typeof initialize>;
@@ -31,9 +32,11 @@ export const ApiClientsProvider = ({ children }: PropsWithChildren) => {
                     [http, reactQuery],
                 )}
             >
-                <SessionProvider>
-                    {children}
-                </SessionProvider>
+                <HomeProvider>
+                    <BaseLayout>
+                        {children}
+                    </BaseLayout>
+                </HomeProvider>
             </apiClientContext.Provider>
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>

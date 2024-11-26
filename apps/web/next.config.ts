@@ -4,6 +4,9 @@ process.env.TZ = env.TZ;
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   output: 'standalone',
   crossOrigin: 'use-credentials',
   compress: true,

@@ -34,6 +34,42 @@ export type SessionDTO = {
   iat: number;
   exp: number;
 };
+export type PublicUserDTO = {
+  id: string;
+  email: string;
+  name: string;
+};
+export type EstimateRideDTO = {
+  customer_id: string;
+  origin: string;
+  destination: string;
+};
+export type EstimateRideCreatedDTO = {
+  origin: {
+    latitude: number;
+    longitude: number;
+  };
+  destination: {
+    latitude: number;
+    longitude: number;
+  };
+  distance: number;
+  duration: string;
+  options: {
+    id: string;
+    name: string;
+    description: string;
+    vehicle: string;
+    review: {
+      rating: number;
+      comment: string;
+    };
+    value: number;
+  }[];
+  routeResponse: {
+    [key: string]: any;
+  };
+};
 export type AxiosConfig = {
   paramsSerializer?: AxiosRequestConfig["paramsSerializer"];
 };
@@ -97,6 +133,8 @@ function nullIfUndefined<T>(value: T): NonNullable<T> | null {
 }
 export const queryKeys = {
   session: () => ["session"] as const,
+  getAllPassengers: () => ["getAllPassengers"] as const,
+  getAddress: (street: string) => ["getAddress", street] as const,
 } as const;
 export type QueryKeys = typeof queryKeys;
 function makeRequests(axios: AxiosInstance, config?: AxiosConfig) {
@@ -130,11 +168,51 @@ function makeRequests(axios: AxiosInstance, config?: AxiosConfig) {
           url: `/api/auth/session`,
         })
         .then((res) => res.data),
+    getAllPassengers: () =>
+      axios
+        .request<PublicUserDTO[]>({
+          method: "get",
+          url: `/api/auth/users`,
+        })
+        .then((res) => res.data),
     logout: () =>
       axios
         .request<unknown>({
           method: "post",
           url: `/api/auth/logout`,
+        })
+        .then((res) => res.data),
+    estimateRide: (payload: EstimateRideDTO) =>
+      axios
+        .request<EstimateRideCreatedDTO>({
+          method: "post",
+          url: `/api/ride/estimate`,
+          data: payload,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => res.data),
+    confirmRide: (payload: EstimateRideDTO) =>
+      axios
+        .request<EstimateRideCreatedDTO>({
+          method: "patch",
+          url: `/api/ride/confirm`,
+          data: payload,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => res.data),
+    getAddress: (street: string) =>
+      axios
+        .request<string[]>({
+          method: "get",
+          url: `/api/ride/address`,
+          params: {
+            street,
+          },
+          paramsSerializer: config?.paramsSerializer,
         })
         .then((res) => res.data),
   } as const;
@@ -159,6 +237,39 @@ function makeQueries(requests: Requests) {
       useQuery({
         queryKey: queryKeys.session(),
         queryFn: () => requests.session(),
+        ...options,
+      }),
+    useGetAllPassengers: (
+      options?: Omit<
+        UseQueryOptions<
+          Response<"getAllPassengers">,
+          unknown,
+          Response<"getAllPassengers">,
+          ReturnType<QueryKeys["getAllPassengers"]>
+        >,
+        "queryKey" | "queryFn"
+      >,
+    ): UseQueryResult<Response<"getAllPassengers">, unknown> =>
+      useQuery({
+        queryKey: queryKeys.getAllPassengers(),
+        queryFn: () => requests.getAllPassengers(),
+        ...options,
+      }),
+    useGetAddress: (
+      street: string,
+      options?: Omit<
+        UseQueryOptions<
+          Response<"getAddress">,
+          unknown,
+          Response<"getAddress">,
+          ReturnType<QueryKeys["getAddress"]>
+        >,
+        "queryKey" | "queryFn"
+      >,
+    ): UseQueryResult<Response<"getAddress">, unknown> =>
+      useQuery({
+        queryKey: queryKeys.getAddress(street),
+        queryFn: () => requests.getAddress(street),
         ...options,
       }),
   } as const;
@@ -190,6 +301,28 @@ type MutationConfigs = {
     queryClient: QueryClient,
   ) => Pick<
     UseMutationOptions<Response<"logout">, unknown, unknown, unknown>,
+    "onSuccess" | "onSettled" | "onError"
+  >;
+  useEstimateRide?: (
+    queryClient: QueryClient,
+  ) => Pick<
+    UseMutationOptions<
+      Response<"estimateRide">,
+      unknown,
+      Parameters<Requests["estimateRide"]>[0],
+      unknown
+    >,
+    "onSuccess" | "onSettled" | "onError"
+  >;
+  useConfirmRide?: (
+    queryClient: QueryClient,
+  ) => Pick<
+    UseMutationOptions<
+      Response<"confirmRide">,
+      unknown,
+      Parameters<Requests["confirmRide"]>[0],
+      unknown
+    >,
     "onSuccess" | "onSettled" | "onError"
   >;
 };
@@ -240,6 +373,46 @@ function makeMutations(requests: Requests, config?: Config["mutations"]) {
       useRapiniMutation<Response<"logout">, unknown, unknown>(
         () => requests.logout(),
         config?.useLogout,
+        options,
+      ),
+    useEstimateRide: (
+      options?: Omit<
+        UseMutationOptions<
+          Response<"estimateRide">,
+          unknown,
+          Parameters<Requests["estimateRide"]>[0],
+          unknown
+        >,
+        "mutationFn"
+      >,
+    ) =>
+      useRapiniMutation<
+        Response<"estimateRide">,
+        unknown,
+        Parameters<Requests["estimateRide"]>[0]
+      >(
+        (payload) => requests.estimateRide(payload),
+        config?.useEstimateRide,
+        options,
+      ),
+    useConfirmRide: (
+      options?: Omit<
+        UseMutationOptions<
+          Response<"confirmRide">,
+          unknown,
+          Parameters<Requests["confirmRide"]>[0],
+          unknown
+        >,
+        "mutationFn"
+      >,
+    ) =>
+      useRapiniMutation<
+        Response<"confirmRide">,
+        unknown,
+        Parameters<Requests["confirmRide"]>[0]
+      >(
+        (payload) => requests.confirmRide(payload),
+        config?.useConfirmRide,
         options,
       ),
   } as const;

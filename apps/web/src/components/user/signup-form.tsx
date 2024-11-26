@@ -8,15 +8,13 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { BsArrowRight } from "react-icons/bs";
-import { useLoginContext } from "./login-form-context";
+import { useUserContext } from "./user.form.context";
 import { useLoadingOverlayStore } from "@web/src/lib/loading-overlay.store";
 export const SignUpForm = () => {
   const {
     signUpForm,
-    isLoading,
-    setModalSelected,
     signUpMutation
-  } = useLoginContext();
+  } = useUserContext();
   const loadingOverlay = useLoadingOverlayStore();
   return (
     <Box component={"form"} onSubmit={signUpForm.onSubmit((data) => {
@@ -33,7 +31,6 @@ export const SignUpForm = () => {
             withBorder: true,
           });
           loadingOverlay.toggleOff()
-          setModalSelected("login")
         },
         onError(error: any, variables, context) {
           notifications.show({
@@ -79,7 +76,7 @@ export const SignUpForm = () => {
           variant="outline"
           type="submit"
           color="yellow"
-          loading={isLoading}
+          loading={signUpMutation.isPending}
           rightSection={<BsArrowRight className="text-xl" />}
         >
           Criar conta
