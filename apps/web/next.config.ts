@@ -64,11 +64,11 @@ const nextConfig = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin'
+            value: 'origin-when-cross-origin https://maps.gstatic.com'
           },
           {
             key: 'Content-Security-Policy',
-            value: `default-src 'self' ${env.NEXT_PUBLIC_BACKEND_URL} ${env.NEXT_PUBLIC_BACKEND_URL.replace( 'http', 'ws' )}; img-src 'self' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: ; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' ${env.NEXT_PUBLIC_BACKEND_URL} ${env.NEXT_PUBLIC_BACKEND_URL.replace( 'http', 'ws' )} ; frame-ancestors 'self'; font-src 'self' data: blob: https://use.typekit.net https://fonts.gstatic.com; worker-src 'self' data: blob:;`
+            value: `default-src 'self' ${env.NEXT_PUBLIC_BACKEND_URL} ${env.NEXT_PUBLIC_BACKEND_URL.replace( 'http', 'ws' )}; img-src 'self' https://maps.gstatic.com https://maps.googleapis.com data: blob:; script-src 'self' https://maps.googleapis.com 'unsafe-inline' 'unsafe-eval' data: blob: ; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://maps.googleapis.com ${env.NEXT_PUBLIC_BACKEND_URL} ${env.NEXT_PUBLIC_BACKEND_URL.replace( 'http', 'ws' )} ; frame-ancestors 'self'; font-src 'self' data: blob: https://use.typekit.net https://fonts.gstatic.com; worker-src 'self' data: blob:;`
           },
 
           {

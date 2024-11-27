@@ -1,6 +1,5 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { ColorSchemeScript } from "@mantine/core";
 import { PropsWithChildren } from "react";
 import { MantineThemeProvider } from "./mantine";
 import { ApiClientsProvider } from "./api-clients";
@@ -15,7 +14,7 @@ const RootLayout = ({ children }: PropsWithChildren) => {
   return (
     <html lang="en">
       <head>
-        <ColorSchemeScript />
+
       </head>
       <body className="w-full max-h-screen">
         <MantineThemeProvider>

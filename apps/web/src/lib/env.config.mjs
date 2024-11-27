@@ -12,6 +12,7 @@ export const EnvConfigSchema = z.object( {
     .default(
       "postgresql://postgres:postgres@localhost:5432/postgres?schema=public",
     ),
+  NEXT_PUBLIC_GOOGLE_API_KEY: z.string(),
   NEXT_PUBLIC_BACKEND_URL: z
     .string()
     .url()
@@ -22,7 +23,7 @@ export const EnvConfigSchema = z.object( {
     .url()
     .describe( "The URL of the Frontend Server" )
     .default( "http://localhost:3000" ),
-} );
+});
 
 
 const parsed = EnvConfigSchema.safeParse( process.env );
