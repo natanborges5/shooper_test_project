@@ -1,4 +1,4 @@
-import { ZodValidationPipe } from 'nestjs-zod';
+import { createZodDto, ZodValidationPipe } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const StrToIntNumberSchema = z
@@ -22,3 +22,10 @@ export const StringBooleanSchema = z
 
 export const addressQueryParamSchema = z.string().min(5)
 export const addressValidationPipe = new ZodValidationPipe(addressQueryParamSchema);
+export const idQueryParamSchema = z.string().uuid().nullish()
+export const idValidationPipe = new ZodValidationPipe(idQueryParamSchema);
+export class IdDTO extends createZodDto(
+  z.object({
+    customer_id: z.string().uuid(),
+  }),
+) {}

@@ -54,8 +54,17 @@ paths:
       tags: *a1
   /api/auth/users:
     get:
-      operationId: getAllPassengers
-      parameters: []
+      operationId: getAllUsers
+      parameters:
+        - name: role
+          required: true
+          in: query
+          description: Driver role
+          schema:
+            enum:
+              - passenger
+              - driver
+            type: string
       responses:
         "200":
           description: ""
@@ -107,15 +116,36 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EstimateRideDTO"
+              $ref: "#/components/schemas/ConfirmRideDTO"
       responses:
-        "201":
+        "200":
+          description: ""
+      summary: confirmRide
+      tags: *a2
+  /api/ride/ride/{customer_id}:
+    get:
+      description: Get Rides of an user / Busca corridas de um usuario
+      operationId: getUserRides
+      parameters:
+        - name: customer_id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: driver_id
+          required: false
+          in: query
+          description: Driver id
+          schema:
+            type: string
+      responses:
+        "200":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EstimateRideCreatedDTO"
-      summary: confirmRide
+                $ref: "#/components/schemas/ListRidesDTO"
+      summary: getUserRides
       tags: *a2
   /api/ride/address:
     get:
@@ -129,7 +159,7 @@ paths:
           schema:
             type: string
       responses:
-        "201":
+        "200":
           description: ""
           content:
             application/json:
@@ -259,10 +289,19 @@ components:
         name:
           type: string
           minLength: 3
+        role:
+          type: string
+          enum:
+            - passenger
+            - driver
+          x-enumNames:
+            - passenger
+            - driver
       required:
         - id
         - email
         - name
+        - role
     EstimateRideDTO:
       type: object
       properties:
@@ -348,3 +387,86 @@ components:
         - duration
         - options
         - routeResponse
+    ConfirmRideDTO:
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+        origin:
+          type: string
+          minLength: 4
+        destination:
+          type: string
+          minLength: 4
+        distance:
+          type: number
+        duration:
+          type: string
+        driver:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+          required:
+            - id
+            - name
+        value:
+          type: number
+      required:
+        - customer_id
+        - origin
+        - destination
+        - distance
+        - duration
+        - driver
+        - value
+    ListRidesDTO:
+      type: object
+      properties:
+        customer_id:
+          type: string
+        rides:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              date:
+                type: string
+                format: date-time
+              origin:
+                type: string
+              destination:
+                type: string
+              distance:
+                type: number
+              duration:
+                type: string
+              driver:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                required:
+                  - id
+                  - name
+              value:
+                type: number
+            required:
+              - id
+              - date
+              - origin
+              - destination
+              - distance
+              - duration
+              - driver
+              - value
+      required:
+        - customer_id
+        - rides

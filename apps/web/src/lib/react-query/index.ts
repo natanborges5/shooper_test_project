@@ -38,6 +38,7 @@ export type PublicUserDTO = {
   id: string;
   email: string;
   name: string;
+  role: "passenger" | "driver";
 };
 export type EstimateRideDTO = {
   customer_id: string;
@@ -69,6 +70,34 @@ export type EstimateRideCreatedDTO = {
   routeResponse: {
     [key: string]: any;
   };
+};
+export type ConfirmRideDTO = {
+  customer_id: string;
+  origin: string;
+  destination: string;
+  distance: number;
+  duration: string;
+  driver: {
+    id: string;
+    name: string;
+  };
+  value: number;
+};
+export type ListRidesDTO = {
+  customer_id: string;
+  rides: {
+    id: string;
+    date: string;
+    origin: string;
+    destination: string;
+    distance: number;
+    duration: string;
+    driver: {
+      id: string;
+      name: string;
+    };
+    value: number;
+  }[];
 };
 export type AxiosConfig = {
   paramsSerializer?: AxiosRequestConfig["paramsSerializer"];
@@ -133,7 +162,10 @@ function nullIfUndefined<T>(value: T): NonNullable<T> | null {
 }
 export const queryKeys = {
   session: () => ["session"] as const,
-  getAllPassengers: () => ["getAllPassengers"] as const,
+  getAllUsers: (role?: "passenger" | "driver") =>
+    ["getAllUsers", nullIfUndefined(role)] as const,
+  getUserRides: (customer_id: string, driver_id?: string) =>
+    ["getUserRides", customer_id, nullIfUndefined(driver_id)] as const,
   getAddress: (street: string) => ["getAddress", street] as const,
 } as const;
 export type QueryKeys = typeof queryKeys;
@@ -168,11 +200,15 @@ function makeRequests(axios: AxiosInstance, config?: AxiosConfig) {
           url: `/api/auth/session`,
         })
         .then((res) => res.data),
-    getAllPassengers: () =>
+    getAllUsers: (role?: "passenger" | "driver") =>
       axios
         .request<PublicUserDTO[]>({
           method: "get",
           url: `/api/auth/users`,
+          params: {
+            ...(role !== undefined ? { role } : undefined),
+          },
+          paramsSerializer: config?.paramsSerializer,
         })
         .then((res) => res.data),
     logout: () =>
@@ -193,15 +229,26 @@ function makeRequests(axios: AxiosInstance, config?: AxiosConfig) {
           },
         })
         .then((res) => res.data),
-    confirmRide: (payload: EstimateRideDTO) =>
+    confirmRide: (payload: ConfirmRideDTO) =>
       axios
-        .request<EstimateRideCreatedDTO>({
+        .request<unknown>({
           method: "patch",
           url: `/api/ride/confirm`,
           data: payload,
           headers: {
             "Content-Type": "application/json",
           },
+        })
+        .then((res) => res.data),
+    getUserRides: (customer_id: string, driver_id?: string) =>
+      axios
+        .request<ListRidesDTO>({
+          method: "get",
+          url: `/api/ride/ride/${customer_id}`,
+          params: {
+            ...(driver_id !== undefined ? { driver_id } : undefined),
+          },
+          paramsSerializer: config?.paramsSerializer,
         })
         .then((res) => res.data),
     getAddress: (street: string) =>
@@ -239,20 +286,39 @@ function makeQueries(requests: Requests) {
         queryFn: () => requests.session(),
         ...options,
       }),
-    useGetAllPassengers: (
+    useGetAllUsers: (
+      role?: "passenger" | "driver",
       options?: Omit<
         UseQueryOptions<
-          Response<"getAllPassengers">,
+          Response<"getAllUsers">,
           unknown,
-          Response<"getAllPassengers">,
-          ReturnType<QueryKeys["getAllPassengers"]>
+          Response<"getAllUsers">,
+          ReturnType<QueryKeys["getAllUsers"]>
         >,
         "queryKey" | "queryFn"
       >,
-    ): UseQueryResult<Response<"getAllPassengers">, unknown> =>
+    ): UseQueryResult<Response<"getAllUsers">, unknown> =>
       useQuery({
-        queryKey: queryKeys.getAllPassengers(),
-        queryFn: () => requests.getAllPassengers(),
+        queryKey: queryKeys.getAllUsers(role),
+        queryFn: () => requests.getAllUsers(role),
+        ...options,
+      }),
+    useGetUserRides: (
+      customer_id: string,
+      driver_id?: string,
+      options?: Omit<
+        UseQueryOptions<
+          Response<"getUserRides">,
+          unknown,
+          Response<"getUserRides">,
+          ReturnType<QueryKeys["getUserRides"]>
+        >,
+        "queryKey" | "queryFn"
+      >,
+    ): UseQueryResult<Response<"getUserRides">, unknown> =>
+      useQuery({
+        queryKey: queryKeys.getUserRides(customer_id, driver_id),
+        queryFn: () => requests.getUserRides(customer_id, driver_id),
         ...options,
       }),
     useGetAddress: (

@@ -21,5 +21,6 @@ export const PublicUserSchema = z.object({
   id: z.string().uuid(),
   email: z.string().email(),
   name: z.string().min(3),
+  role: z.nativeEnum(Role)
 });
 export class PublicUserDTO extends createZodDto(PublicUserSchema) {}

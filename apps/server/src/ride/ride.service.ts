@@ -1,7 +1,7 @@
 import { Client, LatLngLiteral } from '@googlemaps/google-maps-services-js';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ConfirmRideDTO, EstimateRideCreatedDTO, EstimateRideDTO } from '@server/dto/ride.dto';
+import { ConfirmRideDTO, EstimateRideCreatedDTO, EstimateRideDTO, ListRidesDTO } from '@server/dto/ride.dto';
 import { EnvConfig } from '@server/global/env.config';
 import { PrismaService } from 'nestjs-prisma';
 
@@ -44,7 +44,6 @@ export class RideService extends Client {
       include: {
         user: true,
         ride: {
-          take: 1,
           select: {
             review: {
               where: {
@@ -103,6 +102,46 @@ export class RideService extends Client {
         value: data.value
       }
     })
+  }
+  async getRides(customer_id: string, driver_id?: string){
+    this.logger.log(driver_id)
+    const rides = await this.prisma.ride.findMany({
+      where:{
+        passengerId: customer_id,
+        ...driver_id ? {
+          driverId: driver_id
+        } : undefined
+      },
+      orderBy: {
+        createdAt: "desc"
+      },
+      include: {
+        driver: {
+          include: {
+            user: true,
+          }
+        },
+      }
+    })
+    const result: ListRidesDTO = {
+      customer_id,
+      rides: rides.map(ride => {
+        return {
+          id: ride.id,
+          date: ride.createdAt.toString(),
+          origin: ride.origin,
+          destination: ride.destination,
+          distance: ride.distance,
+          duration: ride.duration,
+          driver: {
+            id: ride.driverId,
+            name: ride.driver.user.name
+          },
+          value: ride.value
+        }
+      })
+    }
+    return result
   }
   async getCoordinates(address: string): Promise<LatLngLiteral> {
     const googleRes = await this.geocode({

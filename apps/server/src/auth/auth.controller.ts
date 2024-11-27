@@ -6,7 +6,9 @@ import {
   HttpStatus,
   InternalServerErrorException,
   Logger,
+  ParseEnumPipe,
   Post,
+  Query,
   Req,
   Res,
   Session,
@@ -16,6 +18,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -25,6 +28,7 @@ import { env, EnvConfig } from 'src/global/env.config';
 import datefns from 'date-fns';
 import { JwtTokenDTO, SessionDTO } from 'src/dto/jwt.dto';
 import { JwtAuth } from 'src/auth/jwt/jwt.decorator';
+import { Role } from '@prisma/client';
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
@@ -103,14 +107,20 @@ export class AuthController {
     return session;
   }
   @Get('users')
-  @ApiOperation({ operationId: 'getAllPassengers' })
+  @ApiOperation({ operationId: 'getAllUsers' })
+  @ApiQuery({
+    name: 'role',
+    enum: Role,
+    description: 'Driver role',
+    required: true,
+  })
   @ApiOkResponse({
     type: PublicUserDTO,
     isArray: true,
   })
-  async getAllPassengers() {
+  async getAllUsers(@Query('role', new ParseEnumPipe(Role)) role: Role) {
     try {
-      return await this.userService.listUsers();
+      return await this.userService.listUsers(role);
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

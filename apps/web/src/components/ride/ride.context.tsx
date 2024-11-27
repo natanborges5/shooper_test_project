@@ -31,7 +31,7 @@ export const RideProvider = ({
   const { reactQuery } = useApiClients();
   const estimateRideMutation = reactQuery.mutations.useEstimateRide()
   const confirmRideMutation = reactQuery.mutations.useConfirmRide()
-  const getAllPassengersQuery = reactQuery.queries.useGetAllPassengers()
+  const getAllPassengersQuery = reactQuery.queries.useGetAllUsers("passenger")
   const users = useMemo(() => getAllPassengersQuery.data, [getAllPassengersQuery.data])
   const [rideSelected, setRideSelected] = useState<EstimateRideCreatedDTO | null>(null)
   const estimateRideForm = useEstimateRideFormForm({

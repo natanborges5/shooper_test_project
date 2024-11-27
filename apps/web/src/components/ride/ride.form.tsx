@@ -52,7 +52,7 @@ export const RideForm = () => {
       })
     })}>
       <Stack className="w-1/2 justify-center mx-auto">
-        <Text className="text-3xl font-light">Solicitar Viagem</Text>
+        <Text className="text-3xl font-light text-white">Solicitar Viagem</Text>
         <Select
           clearable
           label="Selecione o passageiro"
@@ -63,13 +63,10 @@ export const RideForm = () => {
               label: user.email
             }
           })}
-          styles={{
-            option: {
-              color: "black", // Altera a cor do texto dos itens do dropdown
-            },
-          }}
+          className="text-white"
         />
         <Select
+          className="text-white"
           clearable
           label="Local de Origem"
           searchValue={originSearch}
@@ -78,11 +75,6 @@ export const RideForm = () => {
           onSearchChange={setOriginSearch}
           data={[...originAddresses ?? [], originSearch + " "]}
           {...estimateRideForm.getInputProps("origin")}
-          styles={{
-            option: {
-              color: "black", // Altera a cor do texto dos itens do dropdown
-            },
-          }}
         />
         <Select
           clearable
@@ -93,11 +85,7 @@ export const RideForm = () => {
           onSearchChange={setDestinationSearch}
           data={[...destinationAddresses ?? [], destinationSearch + " "]}
           {...estimateRideForm.getInputProps("destination")}
-          styles={{
-            option: {
-              color: "black", // Altera a cor do texto dos itens do dropdown
-            },
-          }}
+          className="text-white"
         />
         <Button type="submit" color="yellow" styles={{
           label: {

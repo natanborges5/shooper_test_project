@@ -5,6 +5,7 @@ import {
   Get,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -15,8 +16,9 @@ import {
 import { ApiOperation, ApiOkResponse, ApiTags, ApiBody, ApiCreatedResponse, ApiQuery } from '@nestjs/swagger';
 import { UseZodGuard, ZodSerializerDto, ZodValidationPipe } from 'nestjs-zod';
 import { RideService } from './ride.service';
-import { EstimateRideCreatedDTO, EstimateRideDTO } from '@server/dto/ride.dto';
-import { addressValidationPipe } from '@server/dto/common';
+import { ConfirmRideDTO, EstimateRideCreatedDTO, EstimateRideDTO, ListRidesDTO } from '@server/dto/ride.dto';
+import { addressValidationPipe, idValidationPipe, IdDTO } from '@server/dto/common';
+import { z } from 'zod';
 @Controller('ride')
 @ApiTags('ride')
 @UsePipes(ZodValidationPipe)
@@ -54,16 +56,44 @@ export class RideController {
     operationId: 'confirmRide',
   })
   @ApiBody({
-    type: EstimateRideDTO,
+    type: ConfirmRideDTO,
   })
-  @UseZodGuard('body', EstimateRideDTO)
+  @UseZodGuard('body', ConfirmRideDTO)
   @ZodSerializerDto(EstimateRideCreatedDTO)
-  @ApiCreatedResponse({
-    type: EstimateRideCreatedDTO,
-  })
-  async confirmRide(@Body() ride: EstimateRideDTO) {
+  async confirmRide(@Body() ride: ConfirmRideDTO) {
     try {
-      await this.rideService.estimateRide(ride);
+      await this.rideService.confirmRide(ride);
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+  @Get("ride/:customer_id")
+  @ApiQuery({
+    name: 'driver_id',
+    type: 'string',
+    description: 'Driver id',
+    required: false,
+  })
+  @UseZodGuard('params', IdDTO)
+  @ApiOperation({
+    description: 'Get Rides of an user / Busca corridas de um usuario',
+    summary: 'getUserRides',
+    operationId: 'getUserRides',
+  })
+  @ApiOkResponse({
+    type: ListRidesDTO,
+  })
+  async getUserRides(@Param('customer_id') customerId: string,@Query('driver_id', idValidationPipe) driverId: string) {
+    try {
+      const result = await this.rideService.getRides(customerId, driverId)
+      if (!result || result.rides.length === 0) {
+        throw new NotFoundException({
+          error_code: 'NO_RIDES_FOUND',
+          error_description: 'Nenhuma corrida encontrada para os critérios fornecidos.',
+        });
+      }
+      return result;
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException(error);
@@ -81,7 +111,7 @@ export class RideController {
     summary: 'getAddress',
     operationId: 'getAddress',
   })
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     type: String,
     isArray: true,
   })

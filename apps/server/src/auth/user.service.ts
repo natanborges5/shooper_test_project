@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { JwtPayloadDTO, JwtTokenDTO } from 'src/dto/jwt.dto';
 import { CredentialsLoginDTO, SignUpDTO } from 'src/dto/user.dto';
@@ -51,10 +52,10 @@ export class UserService {
     });
     return user;
   }
-  async listUsers(){
+  async listUsers(role: Role = "passenger"){
     return await this.prisma.user.findMany({
       where: {
-        role: "passenger"
+        role: role
       },
       select:{
         id: true,

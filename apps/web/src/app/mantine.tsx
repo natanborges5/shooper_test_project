@@ -47,13 +47,6 @@ export const MantineThemeProvider = ({ children }: PropsWithChildren) => {
           lg: "70em",
           xl: "120em",
         },
-        components: {
-          Text: {
-            defaultProps: {
-              color: "white", // Define branco como padrão para o componente `Text`
-            },
-          },
-        },
       })}
     >
       <DatesProvider

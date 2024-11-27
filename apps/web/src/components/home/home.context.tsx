@@ -3,6 +3,8 @@ import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext,
 import { RideHome } from "../ride";
 import { UserComponent } from "../user";
 import { RideProvider } from "../ride/ride.context";
+import { HistoryComponent } from "../history";
+import { HistoryProvider } from "../history/history.context";
 
 type HomeContext = {
   componentSelected: ComponentNames
@@ -39,7 +41,7 @@ export const HomeProvider = ({
 };
 
 export const useHomeContext = () => useContext(homeContext);
-type ComponentNames = "ride" | "user";
+type ComponentNames = "ride" | "user" | "history";
 
 interface ComponentProps {
   name: ComponentNames;
@@ -54,5 +56,9 @@ export const homeComponents: Record<ComponentNames, ComponentProps> = {
   user: {
     name: "user",
     element: <UserComponent />,
+  },
+  history: {
+    name: "history",
+    element: <HistoryProvider><HistoryComponent /></HistoryProvider>,
   },
 };
