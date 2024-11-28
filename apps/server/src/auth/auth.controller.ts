@@ -12,6 +12,7 @@ import {
   Req,
   Res,
   Session,
+  UsePipes,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import {
@@ -29,8 +30,10 @@ import datefns from 'date-fns';
 import { JwtTokenDTO, SessionDTO } from 'src/dto/jwt.dto';
 import { JwtAuth } from 'src/auth/jwt/jwt.decorator';
 import { Role } from '@prisma/client';
+import { ZodValidationPipe } from 'nestjs-zod';
 @Controller('auth')
 @ApiTags('auth')
+@UsePipes(ZodValidationPipe)
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
   constructor(
